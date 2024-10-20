@@ -1,0 +1,8 @@
+streamlit
+google-cloud-speech
+google-cloud-texttospeech
+moviepy
+requests
+numpy
+google-auth
+pydub
