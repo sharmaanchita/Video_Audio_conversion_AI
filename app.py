@@ -9,8 +9,16 @@ import math
 from pydub import AudioSegment
 from io import BytesIO
 import tempfile
+import json
 
-credentials = service_account.Credentials.from_service_account_file('poc4intern-fb40e8306541.json')
+google_credentials_dict = dict(st.secrets["connections"]["gcs"])  # Convert AttrDict to dict
+
+try:
+    # Create credentials from the dictionary
+    credentials = service_account.Credentials.from_service_account_info(google_credentials_dict)
+except Exception as e:
+    st.error(f"Error creating credentials: {e}")
+    raise
 
 def split_audio(audio, chunk_length_ms=30000):
     chunks = math.ceil(len(audio) / chunk_length_ms)
@@ -126,8 +134,8 @@ def replace_audio(video_bytes, audio_segment):
     return output_video_io
 
 def main():
-    azure_openai_key = st.secrets["azure_openai_key"]
-    azure_openai_endpoint = st.secrets["azure_openai_endpoint"]
+    azure_openai_key = st.secrets["connections"]["azure_openai"]["key"]
+    azure_openai_endpoint = st.secrets["connections"]["azure_openai"]["endpoint"]
 
     st.markdown("<h1 style='text-align:center; color:#cc99ff;'>🎬 Video Voice Converter</h1>", unsafe_allow_html=True)
     st.markdown("<h4 style='text-align:center; color:#ccccff;'>Swap the audio with Journey voice</h4>", unsafe_allow_html=True)
